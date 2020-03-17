@@ -5,9 +5,12 @@ import NoteListNav from '../NoteListNav/NoteListNav';
 import NotePageNav from '../NotePageNav/NotePageNav';
 import NoteListMain from '../NoteListMain/NoteListMain';
 import NotePageMain from '../NotePageMain/NotePageMain';
+import AddFolder from '../AddFolder/AddFolder';
+import AddNote from '../AddNote/AddNote';
 import ApiContext from '../ApiContext';
 import config from '../config';
 import './App.css';
+import AddError from '../AddError';
 
 class App extends Component {
     state = {
@@ -34,6 +37,23 @@ class App extends Component {
             .catch(error => {
                 console.error({error});
             });
+    }
+
+    handleAddFolder = folder => {
+        this.setState({
+          folders: [
+            ...this.state.folders,
+            folder
+          ]
+        })
+      }
+      
+    handleAddNote = note => {
+        this.setState({
+            notes: [
+                ...this.state.notes,
+            note]
+        })
     }
 
     handleDeleteNote = noteId => {
@@ -72,15 +92,20 @@ class App extends Component {
                     />
                 ))}
                 <Route path="/note/:noteId" component={NotePageMain} />
+                <Route path='/add-folder'component={AddFolder}/>
+                <Route path='/add-note'component={AddNote}/>
             </>
         );
+        
     }
 
     render() {
         const value = {
             notes: this.state.notes,
             folders: this.state.folders,
-            deleteNote: this.handleDeleteNote
+            deleteNote: this.handleDeleteNote,
+            addFolder: this.handleAddFolder,
+            addNote: this.handleAddNote,
         };
         return (
             <ApiContext.Provider value={value}>
@@ -92,7 +117,9 @@ class App extends Component {
                             <FontAwesomeIcon icon="check-double" />
                         </h1>
                     </header>
+                    <AddError>
                     <main className="App__main">{this.renderMainRoutes()}</main>
+                    </AddError>
                 </div>
             </ApiContext.Provider>
         );
